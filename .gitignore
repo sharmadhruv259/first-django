@@ -1,0 +1,41 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Django environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Django database (local development)
+db.sqlite3
+db.sqlite3-journal
+
+# Django migrations: keep migration files tracked
+# Do not ignore migrations/
+
+# Static and uploaded media files
+staticfiles/
+media/
+
+# Logs
+*.log
+
+# Test and coverage files
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
