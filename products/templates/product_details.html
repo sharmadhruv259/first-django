@@ -1,0 +1,503 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} | My Products Store</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+            line-height: 1.6;
+        }
+
+        /* Navigation - matches home page */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 16px 6%;
+            background: #fff;
+            border-bottom: 1px solid #e8edf5;
+            box-shadow: 0 3px 15px rgba(15, 23, 42, 0.04);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #172554;
+            font-size: 21px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: #2563eb;
+            color: white;
+            font-size: 23px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .home-link {
+            color: #475569;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .home-link:hover {
+            color: #2563eb;
+        }
+
+        /* Profile dropdown */
+        .profile {
+            position: relative;
+        }
+
+        .profile-button {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #1d4ed8;
+            cursor: pointer;
+            font-size: 23px;
+        }
+
+        .profile-button:hover {
+            background: #dbeafe;
+        }
+
+        .profile-menu {
+            display: none;
+            position: absolute;
+            top: 56px;
+            right: 0;
+            width: 210px;
+            padding: 8px;
+            background: white;
+            border: 1px solid #e5eaf2;
+            border-radius: 14px;
+            box-shadow: 0 12px 35px rgba(15, 23, 42, 0.14);
+        }
+
+        .profile-menu.show {
+            display: block;
+        }
+
+        .menu-heading {
+            padding: 10px 12px;
+            color: #64748b;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .menu-link,
+        .logout-button {
+            display: block;
+            width: 100%;
+            padding: 11px 12px;
+            border: none;
+            border-radius: 9px;
+            background: transparent;
+            color: #334155;
+            font: inherit;
+            font-size: 14px;
+            text-align: left;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .menu-link:hover {
+            background: #f1f5f9;
+        }
+
+        .logout-button {
+            color: #dc2626;
+        }
+
+        .logout-button:hover {
+            background: #fef2f2;
+        }
+
+        /* Main product layout */
+        .container {
+            max-width: 1050px;
+            margin: 42px auto;
+            padding: 0 24px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .product-card {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 38px;
+            padding: 36px;
+            border: 1px solid #edf0f6;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+        }
+
+        .product-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #eff6ff, #e0e7ff);
+            color: #2563eb;
+            font-size: 100px;
+        }
+
+        .product-info {
+            min-width: 0;
+            padding: 8px 0;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .product-info h1 {
+            margin-bottom: 16px;
+            color: #172554;
+            font-size: clamp(27px, 4vw, 36px);
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+
+        .description {
+            margin-bottom: 22px;
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        .price {
+            margin-bottom: 18px;
+            color: #1d4ed8;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .category {
+            margin-bottom: 20px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .category span {
+            display: inline-block;
+            margin-left: 5px;
+            padding: 5px 11px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+        }
+
+        .stock {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .low-stock {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .out-of-stock {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #fee2e2;
+            color: #991b1b;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .cart-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            background: #1d4ed8;
+        }
+
+        .cart-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 24px;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            padding: 24px;
+            border-top: 1px solid #e8edf5;
+            color: #94a3b8;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 700px) {
+            header {
+                padding: 12px 16px;
+            }
+
+            .brand {
+                font-size: 17px;
+            }
+
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .nav-right {
+                gap: 12px;
+            }
+
+            .container {
+                margin: 26px auto;
+                padding: 0 16px;
+            }
+
+            .product-card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 20px;
+            }
+
+            .product-visual {
+                min-height: 210px;
+                font-size: 75px;
+            }
+
+            .product-info {
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .home-link {
+                font-size: 12px;
+            }
+
+            .brand {
+                gap: 6px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="{% url 'home' %}" class="brand">
+            <span class="brand-icon">🛍</span>
+            <span>My Products Store</span>
+        </a>
+
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="home-link">Home</a>
+
+            <div class="profile">
+                <button
+                    type="button"
+                    class="profile-button"
+                    id="profileButton"
+                    aria-label="Open account menu"
+                    aria-expanded="false"
+                    aria-controls="profileMenu"
+                >👤</button>
+
+                <div class="profile-menu" id="profileMenu">
+                    {% if user.is_authenticated %}
+                        <div class="menu-heading">
+                            Signed in as<br>
+                            <strong>{{ user.username }}</strong>
+                        </div>
+
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-button">
+                                ↪ Logout
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="menu-heading">Your account</div>
+                        <a href="{% url 'login' %}" class="menu-link">Login</a>
+                        <a href="{% url 'register' %}" class="menu-link">Create account</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a>
+            &nbsp; / &nbsp; {{ product.name }}
+        </div>
+
+        <section class="product-card">
+
+            <div class="product-visual" aria-hidden="true">
+                📦
+            </div>
+
+            <div class="product-info">
+                <p class="eyebrow">Product details</p>
+
+                <h1>{{ product.name }}</h1>
+
+                <p class="description">
+                    {{ product.description|linebreaksbr }}
+                </p>
+
+                <p class="price">₹{{ product.price }}</p>
+
+                <p class="category">
+                    Category:
+                    <span>{{ product.category.name }}</span>
+                </p>
+
+                {% if product.stock >= 5 %}
+                    <p class="stock">✓ In stock: {{ product.stock }}</p>
+                {% elif product.stock > 0 %}
+                    <p class="stock low-stock">
+                        Low stock: {{ product.stock }} left
+                    </p>
+                {% else %}
+                    <p class="out-of-stock">Out of stock</p>
+                {% endif %}
+
+                {% if product.stock > 0 %}
+                    <button type="button" class="cart-btn">
+                        🛒 Add to Cart
+                    </button>
+                {% else %}
+                    <button type="button" class="cart-btn" disabled>
+                        Currently Unavailable
+                    </button>
+                {% endif %}
+
+                <a href="{% url 'home' %}" class="back-link">
+                    ← Back to Products
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        © {% now "Y" %} My Products Store. All rights reserved.
+    </footer>
+
+    <script>
+        const profileButton = document.getElementById("profileButton");
+        const profileMenu = document.getElementById("profileMenu");
+
+        profileButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            const isOpen = profileMenu.classList.toggle("show");
+            profileButton.setAttribute("aria-expanded", isOpen);
+        });
+
+        document.addEventListener("click", function (event) {
+            if (
+                !profileMenu.contains(event.target) &&
+                !profileButton.contains(event.target)
+            ) {
+                profileMenu.classList.remove("show");
+                profileButton.setAttribute("aria-expanded", "false");
+            }
+        });
+    </script>
+
+</body>
+</html>

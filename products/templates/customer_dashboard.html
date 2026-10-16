@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Home | My Products Store</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 6%;
+            background: white;
+            border-bottom: 1px solid #e5eaf2;
+        }
+        header a { color: #2563eb; text-decoration: none; }
+        .container { max-width: 1150px; margin: 38px auto; padding: 0 22px; }
+        .intro { margin-bottom: 28px; }
+        .intro p { color: #64748b; line-height: 1.6; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 22px;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            padding: 23px;
+            border: 1px solid #e5eaf2;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 5px 18px #0f172a08;
+        }
+        .product-icon {
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: #eff6ff;
+            font-size: 26px;
+        }
+        h2 { color: #172554; overflow-wrap: anywhere; }
+        .description { flex-grow: 1; color: #64748b; line-height: 1.6; }
+        .price { color: #2563eb; font-size: 24px; font-weight: bold; }
+        .stock { color: #15803d; font-size: 13px; }
+        .unavailable { color: #b91c1c; }
+        .details {
+            display: block;
+            padding: 12px;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .empty {
+            grid-column: 1 / -1;
+            padding: 35px;
+            background: white;
+            border-radius: 14px;
+            text-align: center;
+            color: #64748b;
+        }
+        @media (max-width: 600px) {
+            header { padding: 15px; }
+            .container { margin-top: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <strong>🛍 My Products Store</strong>
+        <div>
+            Hi, {{ user.username }} &nbsp;|&nbsp;
+            <a href="{% url 'home' %}">Store Home</a>
+            <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" style="margin-left:10px;cursor:pointer;">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h1>Welcome, {{ user.username }}!</h1>
+            <p>Explore our products and find something you'll love.</p>
+        </section>
+
+        <section class="grid">
+            {% for product in products %}
+                <article class="card">
+                    <div class="product-icon">📦</div>
+                    <h2>{{ product.name }}</h2>
+                    <p class="description">{{ product.description }}</p>
+                    <p class="price">₹{{ product.price }}</p>
+
+                    {% if product.stock > 0 %}
+                        <p class="stock">✓ In stock: {{ product.stock }}</p>
+                        <a class="details"
+                           href="{% url 'product_detail' product.id %}">
+                            View Details →
+                        </a>
+                    {% else %}
+                        <p class="unavailable">Out of stock</p>
+                        <a class="details"
+                           href="{% url 'product_detail' product.id %}">
+                            View Details
+                        </a>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <div class="empty">
+                    <h2>No products available yet</h2>
+                    <p>Please check back later.</p>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

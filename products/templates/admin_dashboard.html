@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | My Products Store</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #172033;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 6%;
+            background: #172554;
+            color: white;
+        }
+        header a { color: white; text-decoration: none; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .intro { margin-bottom: 28px; }
+        .intro p { color: #64748b; line-height: 1.6; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            padding: 25px;
+            border: 1px solid #e5eaf2;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 5px 18px #0f172a0a;
+        }
+        .card .icon { font-size: 32px; }
+        .card h2 { font-size: 19px; color: #172554; }
+        .card p { min-height: 42px; color: #64748b; line-height: 1.5; }
+        .card a, .button {
+            display: inline-block;
+            padding: 11px 15px;
+            border: 0;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .logout { background: #dc2626; }
+        @media (max-width: 600px) {
+            header { padding: 16px; }
+            .container { margin-top: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <strong>🛍 Store Admin</strong>
+        <div>
+            <span>Hi, {{ user.username }}</span>
+            <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button class="button logout" type="submit">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h1>Admin Dashboard</h1>
+            <p>Manage your store's products, categories, inventory, customers, and orders.</p>
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <div class="icon">📦</div>
+                <h2>Products</h2>
+                <p>Add, update, and remove products from your store.</p>
+                <a href="{% url 'admin_product_list' %}">Manage Products</a>
+            </article>
+
+            <article class="card">
+                <div class="icon">🗂️</div>
+                <h2>Categories</h2>
+                <p>Organize products into categories.</p>
+                <a href="{% url 'admin_category_list' %}">Manage Categories</a>
+            </article>
+
+            <article class="card">
+                <div class="icon">👥</div>
+                <h2>Customers & Users</h2>
+                <p>View registered users and manage accounts.</p>
+                <a href="{% url 'admin_user_list' %}">Manage Users</a>
+            </article>
+
+            <article class="card">
+                <div class="icon">🧾</div>
+                <h2>Orders</h2>
+                <p>Manage customer orders once the order system is added.</p>
+                <span>Coming next</span>
+            </article>
+        </section>
+
+        <p style="margin-top:28px;">
+            <a href="{% url 'home' %}" style="color:#2563eb;">← View Store Homepage</a>
+        </p>
+    </main>
+</body>
+</html>
